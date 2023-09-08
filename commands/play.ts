@@ -45,12 +45,12 @@ export default {
 
     const url = argSongName;
 
-    if (interaction.replied) await interaction.editReply("⏳ Loading...").catch(console.error);
-    else await interaction.reply("⏳ Loading...");
+    if (interaction.replied) await interaction.editReply("Loading...").catch(console.error);
+    else await interaction.reply("Loading...");
 
     // Start the playlist if playlist url was provided
     if (playlistPattern.test(url)) {
-      await interaction.editReply("🔗 Link is playlist").catch(console.error);
+      await interaction.editReply("Link is playlist").catch(console.error);
 
       return bot.slashCommandsMap.get("playlist")!.execute(interaction, 'song');
     }

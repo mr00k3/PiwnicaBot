@@ -1,13 +1,13 @@
 {
-  "name": "evobot",
-  "version": "2.7.0",
+  "name": "piwnicabot",
+  "version": "0.0.6",
   "description": "Discord music bot built with discord.js",
   "main": "index.ts",
-  "author": "Erit Islami <eritislami@gmail.com>",
+  "author": "mr00k3",
   "private": true,
-  "homepage": "https://github.com/eritislami/evobot",
-  "repository": "github:eritislami/evobot",
-  "bugs": "https://github.com/eritislami/evobot/issues",
+  "homepage": "https://github.com/mr00k3/PiwnicaBot",
+  "repository": "github:mr00k3/PiwnicaBot",
+  "bugs": "https://github.com/mr00k3/PiwnicaBot/issues",
   "engines": {
     "node": ">=16.11.0"
   },

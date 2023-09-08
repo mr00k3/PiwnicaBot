@@ -183,115 +183,16 @@ export class MusicQueue {
     try {
       playingMessage = await this.textChannel.send((newState.resource as AudioResource<Song>).metadata.startMessage());
 
-      await playingMessage.react("⏭");
-      await playingMessage.react("⏯");
-      await playingMessage.react("🔇");
-      await playingMessage.react("🔉");
-      await playingMessage.react("🔊");
-      await playingMessage.react("🔁");
-      await playingMessage.react("🔀");
-      await playingMessage.react("⏹");
     } catch (error: any) {
       console.error(error);
       this.textChannel.send(error.message);
       return;
     }
 
-    const filter = (reaction: any, user: User) => user.id !== this.textChannel.client.user!.id;
-
-    const collector = playingMessage.createReactionCollector({
-      filter,
-      time: song.duration > 0 ? song.duration * 1000 : 600000
-    });
-
-    collector.on("collect", async (reaction, user) => {
-      if (!this.songs) return;
-
-      const member = await playingMessage.guild!.members.fetch(user);
-      Object.defineProperty(this.interaction, 'user', {
-        value: user
-      })
-
-      switch (reaction.emoji.name) {
-        case "⏭":
-          reaction.users.remove(user).catch(console.error);
-          await this.bot.slashCommandsMap.get("skip")!.execute(this.interaction);
-          break;
-
-        case "⏯":
-          reaction.users.remove(user).catch(console.error);
-          if (this.player.state.status == AudioPlayerStatus.Playing) {
-            await this.bot.slashCommandsMap.get("pause")!.execute(this.interaction);
-          } else {
-            await this.bot.slashCommandsMap.get("resume")!.execute(this.interaction);
-          }
-          break;
-
-        case "🔇":
-          reaction.users.remove(user).catch(console.error);
-          if (!canModifyQueue(member)) return i18n.__("common.errorNotChannel");
-          this.muted = !this.muted;
-          if (this.muted) {
-            this.resource.volume?.setVolumeLogarithmic(0);
-            this.textChannel.send(i18n.__mf("play.mutedSong", { author: user })).catch(console.error);
-          } else {
-            this.resource.volume?.setVolumeLogarithmic(this.volume / 100);
-            this.textChannel.send(i18n.__mf("play.unmutedSong", { author: user })).catch(console.error);
-          }
-          break;
-
-        case "🔉":
-          reaction.users.remove(user).catch(console.error);
-          if (this.volume == 0) return;
-          if (!canModifyQueue(member)) return i18n.__("common.errorNotChannel");
-          this.volume = Math.max(this.volume - 10, 0);
-          this.resource.volume?.setVolumeLogarithmic(this.volume / 100);
-          this.textChannel
-            .send(i18n.__mf("play.decreasedVolume", { author: user, volume: this.volume }))
-            .catch(console.error);
-          break;
-
-        case "🔊":
-          reaction.users.remove(user).catch(console.error);
-          if (this.volume == 100) return;
-          if (!canModifyQueue(member)) return i18n.__("common.errorNotChannel");
-          this.volume = Math.min(this.volume + 10, 100);
-          this.resource.volume?.setVolumeLogarithmic(this.volume / 100);
-          this.textChannel
-            .send(i18n.__mf("play.increasedVolume", { author: user, volume: this.volume }))
-            .catch(console.error);
-          break;
-
-        case "🔁":
-          reaction.users.remove(user).catch(console.error);
-          await this.bot.slashCommandsMap.get("loop")!.execute(this.interaction);
-          break;
-
-        case "🔀":
-          reaction.users.remove(user).catch(console.error);
-          await this.bot.slashCommandsMap.get("shuffle")!.execute(this.interaction);
-          break;
-
-        case "⏹":
-          reaction.users.remove(user).catch(console.error);
-          await this.bot.slashCommandsMap.get("stop")!.execute(this.interaction);
-          collector.stop();
-          break;
-
-        default:
-          reaction.users.remove(user).catch(console.error);
-          break;
-      }
-    });
-
-    collector.on("end", () => {
-      playingMessage.reactions.removeAll().catch(console.error);
-
       if (config.PRUNING) {
         setTimeout(() => {
           playingMessage.delete().catch();
         }, 3000);
       }
-    });
+    };
   }
-}

@@ -1,4 +1,5 @@
 import {
+  ActivityType,
   ApplicationCommandDataResolvable,
   ChatInputCommandInteraction,
   Client,
@@ -31,7 +32,7 @@ export class Bot {
 
     this.client.on("ready", () => {
       console.log(`${this.client.user!.username} ready!`);
-
+      client.user!.setActivity(`/help`, { type: ActivityType.Listening });
       this.registerSlashCommands();
     });
 
